@@ -1,6 +1,6 @@
 FROM ruby:2.5-slim
 
-RUN apt-get update -qq && apt-get install -y build-essential && apt-get install sqlite3
+RUN apt-get update -qq && apt-get install -y build-essential sqlite3 libsqlite3-dev
 
 ENV APP_HOME /app
 RUN mkdir $APP_HOME
