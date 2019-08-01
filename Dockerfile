@@ -13,4 +13,4 @@ RUN bundle install
 ADD . $APP_HOME
 
 EXPOSE 80
-CMD ["bundle", "exec", "rackup", "config.ru", "-p", "80", "-s", "thin", "-o", "0.0.0.0"]
+CMD ["bundle", "exec", "rackup", "config.ru", "-p", "80","-o", "0.0.0.0"]
