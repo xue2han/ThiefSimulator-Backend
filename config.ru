@@ -1,3 +1,3 @@
 $:.unshift(File.dirname(__FILE__))
-require 'app'
-run App
+require './main'
+run Sinatra::Application
