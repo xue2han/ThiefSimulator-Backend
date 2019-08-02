@@ -11,6 +11,7 @@ helpers do
 end
 
 get '/rank/:category' do |category|
+    username = params['name']
 
     if category == "money" or category == "children" or category == "jail"
         rs = db.query "SELECT * FROM #{category} ORDER BY value DESC LIMIT 100"
@@ -18,7 +19,16 @@ get '/rank/:category' do |category|
         rs.each_hash do |a|
             list << a
         end
-        return json :success => true,:result => list
+
+        if username
+            rs = db.query "SELECT rownum,value FROM ( SELECT ROW_NUMBER () OVER ( ORDER BY value DESC ) rownum,name,value FROM #{category} ) t WHERE name=?",username
+            myRank = rs.next_hash
+            if myRank
+                myRank = {:value => myRank["value"],:rank => myRank["rownum"]}
+                return json :success => true,:rankList => list,:myRank => myRank
+            end
+        end
+        return json :success => true,:rankList => list
     else
         return json :success => false,:msg => "unknown category : #{category}"
     end
@@ -49,7 +59,8 @@ post '/upload/:category' do |category|
     if category == "money" or category == "children" or category == "jail"
         rs = db.query "SELECT * FROM accounts where name = ?",name
         if rs.next 
-            db.execute "UPDATE #{category} SET value=? WHERE name=?",value,name
+            db.execute "UPDATE #{category} SET value=? WHERE name=? AND value < ?",value,name,value
+            return json :success => true
         else
             return json :success => false,:msg => "unknown name : #{name}"
         end
