@@ -23,6 +23,9 @@ get '/rank/:category' do |category|
                 list << a
             end
 
+            rs.close
+            rs = nil
+
             if username
                 rs = db.query "SELECT rownum,value FROM ( SELECT ROW_NUMBER () OVER ( ORDER BY value DESC ) rownum,name,value FROM #{category} ) t WHERE name=?",username
                 myRank = rs.next_hash
