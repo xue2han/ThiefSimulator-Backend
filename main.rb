@@ -68,6 +68,14 @@ post '/upload/:category' do |category|
     name = body['name']
     value = body['value']
 
+    if category == "money" and value.to_i > 1000_0000_0000
+        return json :success => false,:msg => "no cheating"
+    end
+
+    if category == "children" and value.to_i > 1000
+        return json :success => false,:msg => "no cheating"
+    end
+
     if category == "money" or category == "children" or category == "jail"
         begin
             db = getDB
